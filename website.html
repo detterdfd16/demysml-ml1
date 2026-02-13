@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain-Controlled Wheelchair</title>
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f6f9;
+}
+
+/* NAV */
+nav {
+    background: #1f2a44;
+    color: white;
+    padding: 18px 40px;
+    font-size: 20px;
+}
+
+/* HERO */
+.hero {
+    background-image: url("https://cdn.vectorstock.com/i/500p/60/61/brainwave-technology-vector-21026061.jpg");
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 140px 20px;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 44px;
+}
+
+/* SECTION */
+.section {
+    padding: 80px 12%;
+}
+
+.section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* FLEX */
+.flex {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.flex img {
+    width: 420px;
+    border-radius: 10px;
+}
+
+/* TEXT BLOCK */
+.text-box {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* CARDS */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+.card {
+    width: 320px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>Brain-Controlled Wheelchair Project</nav>
+
+<!-- INTRO -->
+<section class="hero">
+<h1>Controlling Mobility Using Brain Signals</h1>
+<p>Exploring how EEG and machine learning can restore independence.</p>
+</section>
+
+<section class="section">
+
+<h2>Project Overview</h2>
+
+<div class="flex">
+
+<img src="https://onlinelibrary.wiley.com/cms/asset/fb9fa997-f316-4b07-ae37-3a0f2852fb8c/bmri9359868-fig-0001-m.jpg">
+
+<div class="text-box">
+
+<p>
+Loss of mobility significantly impacts independence and quality of life. Many individuals
+with neurological injuries rely on assistive technologies to move and interact with their
+environment.
+</p>
+
+<p>
+Our project investigates how brain signals can be used as a natural control interface.
+By analysing EEG signals using machine learning techniques, the system can detect movement
+intentions and translate them into wheelchair control commands.
+</p>
+
+<p>
+This technology aims to provide a non-invasive and intuitive solution that reduces physical
+effort while maintaining reliable control.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!--new-->
+<section class="workflow-section">
+    <h2>How the System Works</h2>
+
+    <div class="workflow-container">
+
+        <div class="workflow-step">
+            <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc" alt="Brain Activity">
+            <h3>Brain Activity</h3>
+            <p>The human brain continuously produces electrical signals as neurons communicate. These signals reflect mental activity including movement planning.</p>
+        </div>
+
+        <div class="arrow">➜</div>
+
+        <div class="workflow-step">
+            <img src="https://www.researchgate.net/profile/Sebastian-Nagel-4/publication/338423585/figure/fig1/AS:844668573073409@1578396089381/Sketch-of-how-to-record-an-Electroencephalogram-An-EEG-allows-measuring-the-electrical.png" alt="EEG Headset">
+            <h3>EEG Headset</h3>
+            <p>EEG headsets measure electrical activity from the scalp using sensors. This method is safe, painless, and widely used in neuroscience research.</p>
+        </div>
+
+        <div class="arrow">➜</div>
+
+        <div class="workflow-step">
+            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c" alt="Machine Learning">
+            <h3>Machine Learning Model</h3>
+            <p>Machine learning models analyse complex EEG patterns and learn to recognise movement intentions based on training data.</p>
+        </div>
+
+        <div class="arrow">➜</div>
+
+        <div class="workflow-step">
+            <img src="https://mobilitypluswheelchairs.co.uk/cdn/shop/files/MobilityPlus_NovaLightweightFoldingElectricWheelchairBlack.jpg?v=1734618332&width=300" alt="Wheelchair">
+            <h3>Wheelchair Control</h3>
+            <p>The predicted movement intentions are converted into commands that control the wheelchair, allowing users to move using thought.</p>
+        </div>
+
+    </div>
+</section>
+
+<style>
+.workflow-section {
+    padding: 60px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.workflow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.workflow-step {
+    width: 220px;
+    background: #f5f7fa;
+    padding: 20px;
+    border-radius: 12px;
+    transition: 0.3s ease;
+}
+
+.workflow-step:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.workflow-step img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.arrow {
+    font-size: 42px;
+    font-weight: bold;
+    color: #4CAF50;
+    animation: flow 1.5s infinite ease-in-out;
+}
+
+@keyframes flow {
+    0% {
+        opacity: 0.3;
+        transform: translateX(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(8px);
+    }
+    100% {
+        opacity: 0.3;
+        transform: translateX(0);
+    }
+}
+</style>
+
+
+</section>
+<section class="background-section">
+    <h2>Background: The Mobility Challenge</h2>
+
+    <div class="background-intro">
+        <img src="https://media.istockphoto.com/id/865287314/vector/%C3%B0%C3%B0%C3%B0%C3%B1%C3%B0%C3%B0%C3%B0-%C3%B0%C3%B0-%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0-%C3%B0%C2%BA%C3%B0%C3%B0%C3%B1%C3%B1%C3%B0%C2%BA%C3%B0%C2%B5.jpg?s=612x612&w=0&k=20&c=YVNlPqS3ljp9yyDpj52andpXx6_ixF27yRaNIv6mNMg=" alt="Wheelchair User">
+        
+        <p>
+            Mobility plays a fundamental role in human independence and quality of life. However, millions of people worldwide 
+            experience mobility impairments caused by neurological injuries and degenerative diseases. Conditions such as 
+            spinal cord injuries, stroke, and motor neuron disease can disrupt communication between the brain and muscles, 
+            preventing individuals from performing voluntary movements such as walking or controlling assistive devices.
+
+            As a result, many individuals rely on powered wheelchairs and assistive technologies to maintain independence 
+            in daily life. While these technologies provide essential support, they often require physical interaction or 
+            sustained concentration, which can create additional challenges for users.
+        </p>
+
+
+    </div>
+
+    <h3>Existing Assistive Technologies</h3>
+
+    <p>
+        Several technologies have been developed to help individuals control mobility devices. Below are some commonly 
+        used solutions and their limitations.
+    </p>
+
+    <div class="tech-grid">
+
+        <div class="tech-card">
+            <img src="https://imotions.com/wp-content/uploads/2023/03/Neon-Just-act-natural-module-exploded-1024x683.jpg" alt="Eye Tracking System">
+            <h4>Eye-Tracking Systems</h4>
+            <p>
+                Eye-tracking allows users to control devices by monitoring gaze direction. Although effective, 
+                it requires continuous visual focus and can become unreliable in poor lighting or when users experience fatigue.
+            </p>
+
+            <button onclick="toggleInfo('eyeInfo')">Learn More</button>
+            <div id="eyeInfo" class="extra-info">
+                Eye-tracking systems use cameras and infrared sensors to detect eye movement. These systems can be highly accurate 
+                but require calibration and stable head positioning.
+            </div>
+        </div>
+
+        <div class="tech-card">
+            <img src="https://www.mo-vis.com/sites/default/files/styles/full_width_small/public/2025-11/Mo-Vis%20Shoot%2019-08-097.jpg?itok=DnkyLdCB" alt="Sip and Puff Device">
+            <h4>Sip-and-Puff Devices</h4>
+            <p>
+                These devices allow control through breathing patterns. Users perform sip or puff actions to generate commands. 
+                However, prolonged use can be physically tiring and may raise hygiene concerns.
+            </p>
+
+            <button onclick="toggleInfo('sipInfo')">Learn More</button>
+            <div id="sipInfo" class="extra-info">
+                Sip-and-puff systems are widely used in assistive mobility devices but require strong breath control and may 
+                not be suitable for individuals with respiratory conditions.
+            </div>
+        </div>
+
+        <div class="tech-card">
+            <img src="https://images.newscientist.com/wp-content/uploads/2021/11/01151236/PRI_207916155.jpg" alt="Neural Implant">
+            <h4>Invasive Neural Implants</h4>
+            <p>
+                Neural implants provide direct brain control of devices and can achieve high accuracy. However, they require 
+                surgical procedures, which introduce medical risks and high costs.
+            </p>
+
+            <button onclick="toggleInfo('implantInfo')">Learn More</button>
+            <div id="implantInfo" class="extra-info">
+                Implant-based brain-computer interfaces place electrodes inside the brain to record neural activity. 
+                Although highly precise, they are not suitable for all patients.
+            </div>
+        </div>
+
+    </div>
+
+    <h3>Why New Solutions Are Needed</h3>
+
+    <div class="background-conclusion">
+        <img src="https://www.ebme.co.uk/images/arts/eeg/electroencephalogram-eeg.jpg" alt="EEG Recording">
+
+        <p>
+            The limitations of existing technologies highlight the need for alternative control methods that are safe, 
+            non-invasive, and intuitive. Recent advances in neuroscience and artificial intelligence have introduced new 
+            opportunities for assistive mobility systems.
+        </p>
+
+        <p>
+            Electroencephalography (EEG) allows researchers to monitor brain activity using sensors placed on the scalp. 
+            When combined with machine learning algorithms, EEG signals can be analysed to recognise user intentions, 
+            such as moving forward, stopping, or turning a wheelchair.
+        </p>
+
+        <p>
+            This project explores the potential of using EEG-based brain-computer interfaces to allow users to control 
+            assistive mobility devices using brain signals alone.
+        </p>
+    </div>
+</section>
+
+<script>
+function toggleInfo(id) {
+    var element = document.getElementById(id);
+    if (element.style.display === "block") {
+        element.style.display = "none";
+    } else {
+        element.style.display = "block";
+    }
+}
+</script>
+
+<style>
+.background-section {
+    padding: 60px;
+    line-height: 1.6;
+}
+
+.background-intro {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.background-intro img {
+    width: 300px;
+    border-radius: 10px;
+}
+
+.tech-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.tech-card {
+    background: #f5f7fa;
+    padding: 20px;
+    border-radius: 10px;
+    width: 30%;
+    text-align: center;
+}
+
+.tech-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.tech-card button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.extra-info {
+    display: none;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+.background-conclusion {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.background-conclusion img {
+    width: 300px;
+    border-radius: 10px;
+}
+</style>
+
+<!-- EEG INTRO -->
+<section class="section">
+
+<h2>Understanding EEG Signals</h2>
+
+<div class="flex">
+
+<img src="https://static1.squarespace.com/static/53fbefb1e4b01a33986e0cfc/t/540730fde4b0fd1f5b95f0e0/1409757438527/?format=1500w">
+
+<div class="text-box">
+
+<p>
+Electroencephalography (EEG) records electrical activity generated by the brain. Neurons
+communicate using electrical impulses, and when large groups of neurons activate together,
+their signals can be detected on the scalp.
+</p>
+
+<p>
+EEG signals provide valuable information about brain functions including attention,
+decision-making, and movement preparation.
+</p>
+
+<p>
+In this project, EEG signals are analysed to detect motor imagery — the process of imagining
+movement without physically performing it. Research shows that imagined movements activate
+similar brain regions as real movements, making it possible to use thought-based control.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</body>
+</html>
