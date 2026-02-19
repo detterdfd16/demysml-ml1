@@ -40,27 +40,32 @@ def preprocess_one_edf(edf_path, out_fif_path, l_freq=8.0, h_freq=40.0,tmin=0.0,
     run = extract_run_number(str(edf_path))
 
     raw = mne.io.read_raw_edf(edf_path, preload=True)
+    raw = mne.io.read_raw_edf(str(edf_path), preload=True, verbose="error")
+    print("Original channels:", raw.ch_names)
+
 
     raw.pick_types(eeg=True)
+    motor_chs = ["Fc3.","Fc1.","Fc2.","Fc4.","C3..","C1..","Cz..","C2..","C4..","Cp3.","Cp1.","Cpz.","Cp2.","Cp4."]
+    raw.pick_channels(motor_chs, ordered=True) 
     raw.filter(l_freq, h_freq)
     raw.set_eeg_reference("average", projection=False, verbose="error")
 
     print(f"channel names: {raw.ch_names}")
 
     # ICA
-    if run_ica:
-        ica = mne.preprocessing.ICA(n_components=0.99,method="fastica",random_state=random_state, max_iter="auto",)
-        ica.fit(raw, verbose="error")
-        frontal = [ch for ch in ["Fp1", "Fp2", "AFp1", "AFp2"] if ch in raw.ch_names]
-        if len(frontal) >= 1:
-            eog_proxy = raw.copy().pick_channels(frontal).get_data().mean(axis=0)
-            sources = ica.get_sources(raw).get_data()
-            corr = np.array([np.corrcoef(sources[i], eog_proxy)[0, 1] for i in range(sources.shape[0])])
-            bad_ics = np.where(np.abs(corr) > 0.3)[0].tolist() 
-            ica.exclude = bad_ics
-            raw = ica.apply(raw, verbose="error")
-        else:
-            pass
+    # if run_ica:
+    #     ica = mne.preprocessing.ICA(n_components=0.99,method="fastica",random_state=random_state, max_iter="auto",)
+    #     ica.fit(raw, verbose="error")
+    #     frontal = [ch for ch in ["Fp1", "Fp2", "AFp1", "AFp2"] if ch in raw.ch_names]
+    #     if len(frontal) >= 1:
+    #         eog_proxy = raw.copy().pick_channels(frontal).get_data().mean(axis=0)
+    #         sources = ica.get_sources(raw).get_data()
+    #         corr = np.array([np.corrcoef(sources[i], eog_proxy)[0, 1] for i in range(sources.shape[0])])
+    #         bad_ics = np.where(np.abs(corr) > 0.3)[0].tolist() 
+    #         ica.exclude = bad_ics
+    #         raw = ica.apply(raw, verbose="error")
+    #     else:
+    #         pass
 
     # Events / epochs
     events, event_id = mne.events_from_annotations(raw)
@@ -90,43 +95,43 @@ def preprocess_one_edf(edf_path, out_fif_path, l_freq=8.0, h_freq=40.0,tmin=0.0,
 
 
 # Single run test
-# edf_path = r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\files\S001\S001R04.edf"
-# out_fif  = r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\ml1\demysml-ml1\processed\S001R04-epo.fif"
-# epochs = preprocess_one_edf(edf_path, out_fif, run_ica=True)
-# print(epochs)
-# print("Epoch event_id:", epochs.event_id)
+edf_path = r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\files\S001\S001R04.edf"
+out_fif  = r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\ml1\demysml-ml1\processed\S001R04-epo.fif"
+epochs = preprocess_one_edf(edf_path, out_fif, run_ica=True)
+print(epochs)
+print("Epoch event_id:", epochs.event_id)
 
-root_dir = pathlib.Path(r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\files")
-processed_root = pathlib.Path(r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\ml1\demysml-ml1\processed_all")
-processed_root.mkdir(parents=True, exist_ok=True)
+# root_dir = pathlib.Path(r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\files")
+# processed_root = pathlib.Path(r"C:\Users\Asus\OneDrive - Imperial College London\I-Explore\ml1\demysml-ml1\processed_all")
+# processed_root.mkdir(parents=True, exist_ok=True)
 
-by_subject = {}
+# by_subject = {}
 
-for subject_dir in sorted(root_dir.glob("S*")):
-    subject_id = subject_dir.name  # "S001"
-    epochs_list = []
+# for subject_dir in sorted(root_dir.glob("S*")):
+#     subject_id = subject_dir.name  # "S001"
+#     epochs_list = []
 
-    for edf_file in sorted(subject_dir.glob(f"{subject_id}R*.edf")):
-        run = extract_run_number(str(edf_file))
-        if 3 <= run <= 14:
-            out_dir = processed_root / subject_id
-            out_dir.mkdir(parents=True, exist_ok=True)
-            out_fif = out_dir / f"{edf_file.stem}-epo.fif"
+#     for edf_file in sorted(subject_dir.glob(f"{subject_id}R*.edf")):
+#         run = extract_run_number(str(edf_file))
+#         if 3 <= run <= 14:
+#             out_dir = processed_root / subject_id
+#             out_dir.mkdir(parents=True, exist_ok=True)
+#             out_fif = out_dir / f"{edf_file.stem}-epo.fif"
 
-            try:
-                ep = preprocess_one_edf(str(edf_file), str(out_fif), run_ica=False)
-                epochs_list.append(ep)
-            except Exception as e:
-                print(f"Skip {edf_file.name}: {e}")
+#             try:
+#                 ep = preprocess_one_edf(str(edf_file), str(out_fif), run_ica=False)
+#                 epochs_list.append(ep)
+#             except Exception as e:
+#                 print(f"Skip {edf_file.name}: {e}")
 
-    if epochs_list:
-        combined_epochs = mne.concatenate_epochs(epochs_list)
+#     if epochs_list:
+#         combined_epochs = mne.concatenate_epochs(epochs_list)
 
-        by_subject[subject_id] = combined_epochs
+#         by_subject[subject_id] = combined_epochs
 
-        # Save combined file
-        combined_out = processed_root / subject_id / f"{subject_id}-allruns-epo.fif"
-        combined_epochs.save(str(combined_out), overwrite=True)
+#         # Save combined file
+#         combined_out = processed_root / subject_id / f"{subject_id}-allruns-epo.fif"
+#         combined_epochs.save(str(combined_out), overwrite=True)
 
-        print(subject_id, "done.",
-            {k: len(combined_epochs[k]) for k in combined_epochs.event_id})
+#         print(subject_id, "done.",
+#             {k: len(combined_epochs[k]) for k in combined_epochs.event_id})
