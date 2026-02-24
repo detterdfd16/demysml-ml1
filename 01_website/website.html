@@ -1,594 +1,879 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brain-Controlled Wheelchair</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain-Controlled Wheelchair | Neuro-Independence</title>
 
-<style>
+    <!-- Alpine.js for simple UI logic -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#1f2a44',
+                            900: '#0f172a',
+                        },
+                        cyber: {
+                            400: '#4ade80',
+                            500: '#22c55e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Lexend', 'Inter', 'sans-serif'],
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Lexend:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f4f6f9;
-}
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
 
-/* NAV */
-nav {
-    background: #1f2a44;
-    color: white;
-    padding: 18px 40px;
-    font-size: 20px;
-}
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
 
-/* HERO */
-.hero {
-    background-image: url("https://cdn.vectorstock.com/i/500p/60/61/brainwave-technology-vector-21026061.jpg");
-    background-size: cover;
-    background-position: center;
-    color: white;
-    padding: 140px 20px;
-    text-align: center;
-}
+            50% {
+                transform: translateY(-10px);
+            }
 
-.hero h1 {
-    font-size: 44px;
-}
+            100% {
+                transform: translateY(0px);
+            }
+        }
 
-/* SECTION */
-.section {
-    padding: 80px 12%;
-}
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
 
-.section h2 {
-    text-align: left;
-    margin-bottom: 40px;
-}
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-/* FLEX */
-.flex {
-    display: flex;
-    gap: 40px;
-    flex-wrap: wrap;
-    align-items: center;
-}
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
 
-.flex img {
-    width: 420px;
-    border-radius: 10px;
-}
-
-/* TEXT BLOCK */
-.text-box {
-    flex: 1;
-    min-width: 300px;
-}
-
-/* CARDS */
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
-    justify-content: center;
-}
-
-.card {
-    width: 320px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-6px);
-}
-
-.card img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-</style>
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-slate-50 text-slate-900 font-sans selection:bg-cyber-500 selection:text-white">
 
-<nav>Brain-Controlled Wheelchair Project</nav>
-
-<!-- INTRO -->
-<section class="hero">
-<h1>Controlling Mobility Using Brain Signals</h1>
-<p>Exploring how EEG and machine learning can restore independence.</p>
-</section>
-
-<section class="section">
-
-<h2>Project Overview</h2>
-
-<div class="flex">
-
-<img src="https://onlinelibrary.wiley.com/cms/asset/fb9fa997-f316-4b07-ae37-3a0f2852fb8c/bmri9359868-fig-0001-m.jpg">
-
-<div class="text-box">
-
-<p>
-Loss of mobility significantly impacts independence and quality of life. Many individuals
-with neurological injuries rely on assistive technologies to move and interact with their
-environment.
-</p>
-
-<p>
-Our project investigates how brain signals can be used as a natural control interface.
-By analysing EEG signals using machine learning techniques, the system can detect movement
-intentions and translate them into wheelchair control commands.
-</p>
-
-<p>
-This technology aims to provide a non-invasive and intuitive solution that reduces physical
-effort while maintaining reliable control.
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!--new-->
-<section class="workflow-section">
-    <h2>How the System Works</h2>
-
-    <div class="workflow-container">
-
-        <div class="workflow-step">
-            <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc" alt="Brain Activity">
-            <h3>Brain Activity</h3>
-            <p>The human brain continuously produces electrical signals as neurons communicate. These signals reflect mental activity including movement planning.</p>
+    <!-- NAVIGATION -->
+    <nav class="sticky top-0 z-50 bg-navy-900/90 backdrop-blur-md text-white border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-cyber-500 rounded-lg flex items-center justify-center shadow-lg shadow-cyber-500/20">
+                    <svg class="w-6 h-6 text-navy-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight">NEURO-DRIVE</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium">
+                <a href="#motivation" class="hover:text-cyber-400 transition-colors">Motivation</a>
+                <a href="#overview" class="hover:text-cyber-400 transition-colors">Project Overview</a>
+                <a href="#system" class="hover:text-cyber-400 transition-colors">System Breakdown</a>
+            </div>
         </div>
+    </nav>
 
-        <div class="arrow">➜</div>
-
-        <div class="workflow-step">
-            <img src="https://www.researchgate.net/profile/Sebastian-Nagel-4/publication/338423585/figure/fig1/AS:844668573073409@1578396089381/Sketch-of-how-to-record-an-Electroencephalogram-An-EEG-allows-measuring-the-electrical.png" alt="EEG Headset">
-            <h3>EEG Headset</h3>
-            <p>EEG headsets measure electrical activity from the scalp using sensors. This method is safe, painless, and widely used in neuroscience research.</p>
-        </div>
-
-        <div class="arrow">➜</div>
-
-        <div class="workflow-step">
-            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c" alt="Machine Learning">
-            <h3>Machine Learning Model</h3>
-            <p>Machine learning models analyse complex EEG patterns and learn to recognise movement intentions based on training data.</p>
-        </div>
-
-        <div class="arrow">➜</div>
-
-        <div class="workflow-step">
-            <img src="https://mobilitypluswheelchairs.co.uk/cdn/shop/files/MobilityPlus_NovaLightweightFoldingElectricWheelchairBlack.jpg?v=1734618332&width=300" alt="Wheelchair">
-            <h3>Wheelchair Control</h3>
-            <p>The predicted movement intentions are converted into commands that control the wheelchair, allowing users to move using thought.</p>
-        </div>
-
-    </div>
-</section>
-
-<style>
-.workflow-section {
-    padding: 60px;
-    text-align: center;
-    background: #ffffff;
-}
-
-.workflow-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 25px;
-}
-
-.workflow-step {
-    width: 220px;
-    background: #f5f7fa;
-    padding: 20px;
-    border-radius: 12px;
-    transition: 0.3s ease;
-}
-
-.workflow-step:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.workflow-step img {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.arrow {
-    font-size: 42px;
-    font-weight: bold;
-    color: #4CAF50;
-    animation: flow 1.5s infinite ease-in-out;
-}
-
-@keyframes flow {
-    0% {
-        opacity: 0.3;
-        transform: translateX(0);
-    }
-    50% {
-        opacity: 1;
-        transform: translateX(8px);
-    }
-    100% {
-        opacity: 0.3;
-        transform: translateX(0);
-    }
-}
-</style>
-
-
-</section>
-<section class="background-section">
-    <h2>Background: The Mobility Challenge</h2>
-
-    <div class="background-intro">
-        <img src="https://media.istockphoto.com/id/865287314/vector/%C3%B0%C3%B0%C3%B0%C3%B1%C3%B0%C3%B0%C3%B0-%C3%B0%C3%B0-%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0-%C3%B0%C2%BA%C3%B0%C3%B0%C3%B1%C3%B1%C3%B0%C2%BA%C3%B0%C2%B5.jpg?s=612x612&w=0&k=20&c=YVNlPqS3ljp9yyDpj52andpXx6_ixF27yRaNIv6mNMg=" alt="Wheelchair User">
-        
-        <p style="text-align: left; padding: 20px 15% 20px 0; width: 100%;">
-            Mobility plays a fundamental role in human independence and quality of life. However, millions of people worldwide 
-            experience mobility impairments caused by neurological injuries and degenerative diseases. Conditions such as 
-            spinal cord injuries, stroke, and motor neuron disease can disrupt communication between the brain and muscles, 
-            preventing individuals from performing voluntary movements such as walking or controlling assistive devices.
-
-            As a result, many individuals rely on powered wheelchairs and assistive technologies to maintain independence 
-            in daily life. While these technologies provide essential support, they often require physical interaction or 
-            sustained concentration, which can create additional challenges for users.
-        </p>
-
-
-    </div>
-
-    <h3>Existing Assistive Technologies</h3>
-
-    <p>
-        Several technologies have been developed to help individuals control mobility devices. Below are some commonly 
-        used solutions and their limitations.
-    </p>
-
-    <div class="tech-grid">
-
-        <div class="tech-card">
-            <img src="https://imotions.com/wp-content/uploads/2023/03/Neon-Just-act-natural-module-exploded-1024x683.jpg" alt="Eye Tracking System">
-            <h4>Eye-Tracking Systems</h4>
-            <p>
-                Eye-tracking allows users to control devices by monitoring gaze direction. Although effective, 
-                it requires continuous visual focus and can become unreliable in poor lighting or when users experience fatigue.
+    <!-- HERO SECTION -->
+    <header class="relative bg-navy-900 text-white overflow-hidden py-24 lg:py-32">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 text-center">
+            <div
+                class="inline-flex items-center px-4 py-2 rounded-full bg-cyber-500/10 border border-cyber-500/20 text-cyber-400 text-xs font-bold uppercase tracking-widest mb-8">
+                Next-Gen Assistive Tech
+            </div>
+            <h1 class="text-5xl lg:text-8xl font-extrabold leading-tight text-white mb-8">
+                Neuro-<span class="text-cyber-400 italic">Drive</span>
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-light mb-12">
+                Empowering movement through the synergy of EEG brain signals and machine learning.
             </p>
-
-            <button onclick="toggleInfo('eyeInfo')">Learn More</button>
-            <div id="eyeInfo" class="extra-info">
-                Eye-tracking systems use cameras and infrared sensors to detect eye movement. These systems can be highly accurate 
-                but require calibration and stable head positioning.
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#motivation"
+                    class="px-8 py-4 bg-cyber-500 hover:bg-cyber-400 text-navy-900 font-bold rounded-xl transition-all hover:scale-105 active:scale-95 shadow-xl shadow-cyber-500/20">
+                    Explore Problem
+                </a>
+                <a href="#system"
+                    class="px-8 py-4 glass text-white font-bold rounded-xl transition-all hover:bg-white/10">
+                    See Solution
+                </a>
             </div>
         </div>
+        <!-- Decorative elements -->
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-cyber-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+    </header>
 
-        <div class="tech-card">
-            <img src="https://www.mo-vis.com/sites/default/files/styles/full_width_small/public/2025-11/Mo-Vis%20Shoot%2019-08-097.jpg?itok=DnkyLdCB" alt="Sip and Puff Device">
-            <h4>Sip-and-Puff Devices</h4>
-            <p>
-                These devices allow control through breathing patterns. Users perform sip or puff actions to generate commands. 
-                However, prolonged use can be physically tiring and may raise hygiene concerns.
+    <!-- SECTION 1: MOTIVATION -->
+    <section id="motivation" class="py-24 bg-navy-900 text-white border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-10">
+                    <div class="space-y-4">
+                        <h2 class="text-4xl lg:text-6xl font-extrabold tracking-tight flex items-baseline gap-4">
+                            1. Our Motivation: </h2>
+                        <h2 class="text-2xl lg:text-3xl font-bold text-slate-400">The Mobility Challenge</h2>
+
+                        <div class="w-20 h-1.5 bg-cyber-500 rounded-full"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-center">
+                            <div class="text-4xl font-black text-cyber-400 mb-2">15%</div>
+                            <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">Of global population
+                            </p>
+                            <p class="text-sm text-slate-500 mt-2">Lives with some form of disability impacting
+                                mobility.</p>
+                        </div>
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-center">
+                            <div class="text-4xl font-black text-blue-400 mb-2">5.4M</div>
+                            <p class="text-xs text-slate-400 uppercase tracking-widest font-bold">People in US</p>
+                            <p class="text-sm text-slate-500 mt-2">Living with paralysis from spinal cord injury or
+                                stroke.</p>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-400 text-lg leading-relaxed">
+                        Loss of mobility isn't just a physical barrier; it's a profound loss of independence. Current
+                        technologies often fall short—either being too invasive, physically demanding, or unreliable in
+                        real-world settings.
+                    </p>
+
+                    <div class="space-y-6" x-data="{ activeGap: null }">
+                        <h3 class="text-xl font-bold flex items-center gap-3">
+                            <span
+                                class="w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-sm">!</span>
+                            Pros and Cons of Current Technology
+                        </h3>
+                        <div class="grid gap-4">
+                            <!-- Eye Tracking -->
+                            <div class="bg-white/5 rounded-xl border border-white/10 overflow-hidden transition-all"
+                                :class="activeGap === 1 ? 'ring-1 ring-cyber-500/50 bg-white/10' : ''">
+                                <button @click="activeGap === 1 ? activeGap = null : activeGap = 1"
+                                    class="w-full flex items-center gap-4 p-4 text-left hover:bg-white/5 transition-colors">
+                                    <div class="text-2xl">👁️</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-sm">Eye-Tracking</h4>
+                                        <p class="text-xs text-slate-500" x-show="activeGap !== 1">High cognitive
+                                            fatigue and lighting sensitivity.</p>
+                                    </div>
+                                    <span class="text-slate-500 transition-transform duration-300"
+                                        :class="activeGap === 1 ? 'rotate-180' : ''">▼</span>
+                                </button>
+                                <div x-show="activeGap === 1" x-collapse
+                                    class="p-4 pt-0 space-y-4 border-t border-white/5 bg-black/20">
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div class="space-y-2">
+                                            <div
+                                                class="text-[10px] uppercase font-black text-cyber-400 tracking-widest">
+                                                Pros</div>
+                                            <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                                                <li>Non-invasive</li>
+                                                <li>Relatively intuitive</li>
+                                            </ul>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div class="text-[10px] uppercase font-black text-rose-400 tracking-widest">
+                                                Cons</div>
+                                            <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                                                <li>High mental fatigue</li>
+                                                <li>Light sensitivity</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sip-and-Puff -->
+                            <div class="bg-white/5 rounded-xl border border-white/10 overflow-hidden transition-all"
+                                :class="activeGap === 2 ? 'ring-1 ring-cyber-500/50 bg-white/10' : ''">
+                                <button @click="activeGap === 2 ? activeGap = null : activeGap = 2"
+                                    class="w-full flex items-center gap-4 p-4 text-left hover:bg-white/5 transition-colors">
+                                    <div class="text-2xl">🌬️</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-sm">Sip-and-Puff</h4>
+                                        <p class="text-xs text-slate-500" x-show="activeGap !== 2">Physically exhausting
+                                            and hygiene concerns.</p>
+                                    </div>
+                                    <span class="text-slate-500 transition-transform duration-300"
+                                        :class="activeGap === 2 ? 'rotate-180' : ''">▼</span>
+                                </button>
+                                <div x-show="activeGap === 2" x-collapse
+                                    class="p-4 pt-0 space-y-4 border-t border-white/5 bg-black/20">
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div class="space-y-2">
+                                            <div
+                                                class="text-[10px] uppercase font-black text-cyber-400 tracking-widest">
+                                                Pros</div>
+                                            <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                                                <li>Well established</li>
+                                                <li>Reliable logic</li>
+                                            </ul>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div class="text-[10px] uppercase font-black text-rose-400 tracking-widest">
+                                                Cons</div>
+                                            <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                                                <li>Physics exertion</li>
+                                                <li>Hygiene challenges</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Neural Implants -->
+                            <div class="bg-white/5 rounded-xl border border-white/10 overflow-hidden transition-all"
+                                :class="activeGap === 3 ? 'ring-1 ring-cyber-500/50 bg-white/10' : ''">
+                                <button @click="activeGap === 3 ? activeGap = null : activeGap = 3"
+                                    class="w-full flex items-center gap-4 p-4 text-left hover:bg-white/5 transition-colors">
+                                    <div class="text-2xl">🧠</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-sm">Neural Implants</h4>
+                                        <p class="text-xs text-slate-500" x-show="activeGap !== 3">Invasive surgery with
+                                            significant medical risks.</p>
+                                    </div>
+                                    <span class="text-slate-500 transition-transform duration-300"
+                                        :class="activeGap === 3 ? 'rotate-180' : ''">▼</span>
+                                </button>
+                                <div x-show="activeGap === 3" x-collapse
+                                    class="p-4 pt-0 space-y-4 border-t border-white/5 bg-black/20">
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div class="space-y-2">
+                                            <div
+                                                class="text-[10px] uppercase font-black text-cyber-400 tracking-widest">
+                                                Pros</div>
+                                            <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                                                <li>Perfect signal quality</li>
+                                                <li>Direct brain link</li>
+                                            </ul>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div class="text-[10px] uppercase font-black text-rose-400 tracking-widest">
+                                                Cons</div>
+                                            <ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+                                                <li>Invasive surgery</li>
+                                                <li>Medical risk/Infection</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <div
+                        class="absolute inset-0 bg-cyber-500/20 rounded-3xl blur-2xl group-hover:bg-cyber-500/30 transition-all">
+                    </div>
+                    <img src="https://media.istockphoto.com/id/865287314/vector/%C3%B0%C3%B0%C3%B0%C3%B1%C3%B0%C3%B0%C3%B0-%C3%B0%C3%B0-%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0%C3%B0-%C3%B0%C2%BA%C3%B0%C3%B0%C3%B1%C3%B1%C3%B0%C2%BA%C3%B0%C2%B5.jpg?s=612x612&w=0&k=20&c=YVNlPqS3ljp9yyDpj52andpXx6_ixF27yRaNIv6mNMg="
+                        class="relative z-10 rounded-3xl opacity-80 mix-blend-screen" alt="Neural Challenge">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: PROJECT OVERVIEW -->
+    <section id="overview" class="py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-20 items-center">
+                <div class="lg:w-1/2 relative">
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-cyber-500/10 rounded-full blur-2xl"></div>
+                    <img src="https://onlinelibrary.wiley.com/cms/asset/fb9fa997-f316-4b07-ae37-3a0f2852fb8c/bmri9359868-fig-0001-m.jpg"
+                        alt="EEG Interface" class="relative z-10 rounded-3xl shadow-2xl grayscale-[20%]">
+                </div>
+                <div class="lg:w-1/2 space-y-8">
+                    <div class="space-y-4 text-center lg:text-left">
+                        <h2 class="text-4xl lg:text-6xl font-extrabold text-navy-900 leading-tight">2. Project Overview
+                            <span </h2>
+                                <div class="w-20 h-1.5 bg-cyber-500 rounded-full mx-auto lg:mx-0"></div>
+                    </div>
+                    <div class="space-y-6 text-slate-600 leading-relaxed text-lg font-light">
+                        <p>
+                            Our project bridges the gap between human intention and robotic execution. By capturing the
+                            minute electrical discharge of neurons during <span
+                                class="font-bold text-navy-900 italic">Motor Imagery</span>—the act of imagining
+                            movement—we can create a non-invasive control loop.
+                        </p>
+                        <p>
+                            We transition from the passive observation of brain activity to active command generation.
+                            This allows users to navigate wheelchairs simply by focusing their thoughts, restoring a
+                            sense of agency and physical freedom.
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-slate-100 grid grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-extrabold text-navy-900 text-sm uppercase tracking-wider mb-2">Interface
+                            </h4>
+                            <p class="text-slate-500 text-sm">Non-invasive EEG Cap</p>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-navy-900 text-sm uppercase tracking-wider mb-2">Detection
+                            </h4>
+                            <p class="text-slate-500 text-sm">Real-time ML Decoding</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: SYSTEM BREAKDOWN -->
+    <section id="system" class="py-24 bg-slate-50 border-t border-slate-200" x-data="{ activeTab: 1 }">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center space-y-4 mb-20">
+                <h2 class="text-4xl lg:text-5xl font-extrabold text-navy-900 leading-tight">3. System Breakdown</h2>
+                <div class="w-24 h-1.5 bg-cyber-500 mx-auto rounded-full"></div>
+                <p class="text-slate-500 max-w-2xl mx-auto">Click on each phase to explore the technical implementation.
+                </p>
+            </div>
+
+            <!-- Tab Navigation (Cards) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                <!-- Card 1 -->
+                <button @click="activeTab = 1"
+                    :class="activeTab === 1 ? 'ring-2 ring-cyber-500 bg-white shadow-xl' : 'bg-white/50 hover:bg-white border border-slate-200'"
+                    class="p-8 rounded-2xl transition-all text-left group">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors"
+                        :class="activeTab === 1 ? 'bg-cyber-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-cyber-100 group-hover:text-cyber-500'">
+                        🧠
+                    </div>
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">a. Brain Activity</h3>
+                    <p class="text-sm text-slate-500">Understanding EEG & Mu/Beta rhythms.</p>
+                </button>
+
+                <!-- Card 2 -->
+                <button @click="activeTab = 2"
+                    :class="activeTab === 2 ? 'ring-2 ring-cyber-500 bg-white shadow-xl' : 'bg-white/50 hover:bg-white border border-slate-200'"
+                    class="p-8 rounded-2xl transition-all text-left group">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors"
+                        :class="activeTab === 2 ? 'bg-cyber-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-cyber-100 group-hover:text-cyber-500'">
+                        📊
+                    </div>
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">b. Preprocessing</h3>
+                    <p class="text-sm text-slate-500">Datasets & signal filtering.</p>
+                </button>
+
+                <!-- Card 3 -->
+                <button @click="activeTab = 3"
+                    :class="activeTab === 3 ? 'ring-2 ring-cyber-500 bg-white shadow-xl' : 'bg-white/50 hover:bg-white border border-slate-200'"
+                    class="p-8 rounded-2xl transition-all text-left group">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors"
+                        :class="activeTab === 3 ? 'bg-cyber-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-cyber-100 group-hover:text-cyber-500'">
+                        🤖
+                    </div>
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">c. ML Model</h3>
+                    <p class="text-sm text-slate-500">Decoding motor imagery (TBA).</p>
+                </button>
+
+                <!-- Card 4 -->
+                <button @click="activeTab = 4"
+                    :class="activeTab === 4 ? 'ring-2 ring-cyber-500 bg-white shadow-xl' : 'bg-white/50 hover:bg-white border border-slate-200'"
+                    class="p-8 rounded-2xl transition-all text-left group">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-6 transition-colors"
+                        :class="activeTab === 4 ? 'bg-cyber-500 text-white' : 'bg-slate-100 text-slate-400 group-hover:bg-cyber-100 group-hover:text-cyber-500'">
+                        ♿
+                    </div>
+                    <h3 class="text-xl font-bold text-navy-900 mb-2">d. Control</h3>
+                    <p class="text-sm text-slate-500">Wheelchair mechanical loop.</p>
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="bg-white rounded-3xl p-8 lg:p-12 shadow-2xl border border-slate-100 min-h-[500px]">
+
+                <!-- Content 1: Brain Activity -->
+                <div x-show="activeTab === 1" x-transition.opacity.duration.500ms class="space-y-12">
+                    <div class="flex flex-col lg:flex-row gap-12 items-center">
+                        <div class="lg:w-1/2 space-y-6">
+                            <h3 class="text-3xl font-extrabold text-navy-900">Understanding EEG Signals</h3>
+                            <p class="text-slate-600 leading-relaxed italic">
+                                EEG is a non-invasive physiological method used to record the electrical activity
+                                generated by the brain by detecting synchronous firing of populations of neurons.
+                            </p>
+                            <div class="grid gap-4">
+                                <div class="bg-slate-50 p-6 rounded-2xl border-l-4 border-cyber-500">
+                                    <h4 class="font-bold text-navy-900 mb-1">Mu Rhythms (8-13 Hz)</h4>
+                                    <p class="text-sm text-slate-500">Directly associated with motor cortex activity;
+                                        suppressed during movement execution or imagery.</p>
+                                </div>
+                                <div class="bg-slate-50 p-6 rounded-2xl border-l-4 border-blue-500">
+                                    <h4 class="font-bold text-navy-900 mb-1">Beta Rhythms (13-30 Hz)</h4>
+                                    <p class="text-sm text-slate-500">Informs us about cognitive states and movement
+                                        preparation.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2">
+                            <img src="https://static1.squarespace.com/static/53fbefb1e4b01a33986e0cfc/t/540730fde4b0fd1f5b95f0e0/1409757438527/?format=1500w"
+                                class="rounded-2xl shadow-xl border border-slate-100" alt="Brain Frequencies">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content 2: Dataset & Preprocessing -->
+                <div x-show="activeTab === 2" x-transition.opacity.duration.500ms class="space-y-0"
+                    x-data="{ hoveredLobe: null }">
+
+                    <!-- STRIP 1: Dataset -->
+                    <div class="py-12 px-2 border-b border-slate-100">
+                        <div class="max-w-4xl mx-auto text-center space-y-6">
+                            <div
+                                class="inline-flex items-center px-3 py-1.5 rounded-full bg-cyber-500/10 border border-cyber-500/20 text-cyber-500 text-[10px] font-black uppercase tracking-widest">
+                                i · The Dataset
+                            </div>
+                            <h3 class="text-3xl font-extrabold text-navy-900">PhysioNet EEG Motor Movement / Imagery
+                                Dataset</h3>
+                            <p class="text-slate-600 leading-relaxed max-w-2xl mx-auto text-lg font-light">
+                                We use the <span class="font-bold text-navy-800">eegmmidb</span> dataset from PhysioNet
+                                — one of the largest freely available EEG datasets for motor imagery research. It
+                                contains recordings from <span class="font-bold text-navy-800">109 subjects</span>, each
+                                performing <span class="font-bold text-navy-800">4 distinct motor/imagery tasks</span>
+                                (left fist, right fist, both fists, both feet), captured across <span
+                                    class="font-bold text-navy-800">64 EEG channels</span> at 160 Hz.
+                            </p>
+                            <div class="flex flex-wrap justify-center gap-6 pt-2">
+                                <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200 text-center">
+                                    <div class="text-2xl font-black text-cyber-500">109</div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1">
+                                        Subjects</div>
+                                </div>
+                                <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200 text-center">
+                                    <div class="text-2xl font-black text-blue-500">64</div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1">
+                                        Channels</div>
+                                </div>
+                                <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200 text-center">
+                                    <div class="text-2xl font-black text-purple-500">4</div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1">
+                                        Motor Tasks</div>
+                                </div>
+                                <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-200 text-center">
+                                    <div class="text-2xl font-black text-amber-500">160 Hz</div>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mt-1">
+                                        Sample Rate</div>
+                                </div>
+                            </div>
+                            <a href="https://physionet.org/content/eegmmidb/1.0.0/" target="_blank"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg mt-4">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                View Dataset on PhysioNet
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- STRIP 2: Preprocessing Pipeline -->
+                    <div class="py-12 px-2 border-b border-slate-100 bg-slate-50/50">
+                        <div class="max-w-5xl mx-auto space-y-8">
+                            <div class="text-center space-y-3">
+                                <div
+                                    class="inline-flex items-center px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-black uppercase tracking-widest">
+                                    ii · Preprocessing Pipeline
+                                </div>
+                                <h3 class="text-3xl font-extrabold text-navy-900">Signal Processing Steps</h3>
+                                <p class="text-slate-500 max-w-xl mx-auto">Raw EEG signals are noisy. Our three-stage
+                                    pipeline isolates the motor imagery patterns we need.</p>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <!-- Card 1: Noise Filtering -->
+                                <div
+                                    class="bg-white rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 p-8 space-y-4 relative overflow-hidden group">
+                                    <div
+                                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-500 to-emerald-400">
+                                    </div>
+                                    <div
+                                        class="w-14 h-14 bg-cyber-500/10 text-cyber-500 rounded-2xl flex items-center justify-center text-2xl font-black group-hover:scale-110 transition-transform">
+                                        1</div>
+                                    <h4 class="text-xl font-extrabold text-navy-900">Noise Filtering</h4>
+                                    <p class="text-slate-500 text-sm leading-relaxed">Apply a <span
+                                            class="font-bold text-navy-800">band-pass filter (8-30 Hz)</span> to isolate
+                                        Mu and Beta frequency bands, removing irrelevant low-frequency drift and
+                                        high-frequency muscle artifacts.</p>
+                                    <div class="pt-3 border-t border-slate-100">
+                                        <div class="text-[10px] uppercase font-black text-slate-400 tracking-widest">
+                                            Output</div>
+                                        <p class="text-xs text-slate-500 mt-1">Clean signal in the 8-30 Hz range</p>
+                                    </div>
+                                </div>
+                                <!-- Card 2: Signal Segmentation -->
+                                <div
+                                    class="bg-white rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 p-8 space-y-4 relative overflow-hidden group">
+                                    <div
+                                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-400">
+                                    </div>
+                                    <div
+                                        class="w-14 h-14 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center text-2xl font-black group-hover:scale-110 transition-transform">
+                                        2</div>
+                                    <h4 class="text-xl font-extrabold text-navy-900">Signal Segmentation</h4>
+                                    <p class="text-slate-500 text-sm leading-relaxed">Slice continuous recordings into
+                                        <span class="font-bold text-navy-800">4-second epochs</span> aligned to motor
+                                        imagery events. Each epoch becomes one training sample for our model.</p>
+                                    <div class="pt-3 border-t border-slate-100">
+                                        <div class="text-[10px] uppercase font-black text-slate-400 tracking-widest">
+                                            Output</div>
+                                        <p class="text-xs text-slate-500 mt-1">Labeled epochs per trial event</p>
+                                    </div>
+                                </div>
+                                <!-- Card 3: Normalization -->
+                                <div
+                                    class="bg-white rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 p-8 space-y-4 relative overflow-hidden group">
+                                    <div
+                                        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-fuchsia-400">
+                                    </div>
+                                    <div
+                                        class="w-14 h-14 bg-purple-500/10 text-purple-500 rounded-2xl flex items-center justify-center text-2xl font-black group-hover:scale-110 transition-transform">
+                                        3</div>
+                                    <h4 class="text-xl font-extrabold text-navy-900">Normalization</h4>
+                                    <p class="text-slate-500 text-sm leading-relaxed">Apply <span
+                                            class="font-bold text-navy-800">StandardScaler</span> to zero-mean and
+                                        unit-variance normalize each channel, ensuring consistent amplitude scales
+                                        across subjects.</p>
+                                    <div class="pt-3 border-t border-slate-100">
+                                        <div class="text-[10px] uppercase font-black text-slate-400 tracking-widest">
+                                            Output</div>
+                                        <p class="text-xs text-slate-500 mt-1">ML-ready feature matrix</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STRIP 3: Strategic Channel Selection — Interactive Brain -->
+                    <div class="py-12 px-2">
+                        <div class="max-w-5xl mx-auto space-y-8">
+                            <div class="text-center space-y-3">
+                                <div
+                                    class="inline-flex items-center px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-500 text-[10px] font-black uppercase tracking-widest">
+                                    iii · Strategic Channel Selection
+                                </div>
+                                <h3 class="text-3xl font-extrabold text-navy-900">Why These Channels?</h3>
+                                <p class="text-slate-500 max-w-xl mx-auto">Hover over each brain region below to see
+                                    which EEG channels we use and why.</p>
+                            </div>
+
+                            <div class="flex flex-col lg:flex-row gap-10 items-center">
+                                <!-- SVG Brain -->
+                                <div class="lg:w-1/2 flex justify-center">
+                                    <svg viewBox="0 0 400 380" class="w-full max-w-md drop-shadow-xl"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Brain outline / base -->
+                                        <ellipse cx="200" cy="190" rx="170" ry="165" fill="#e2e8f0" stroke="#94a3b8"
+                                            stroke-width="2" />
+
+                                        <!-- Frontal Lobe -->
+                                        <path
+                                            d="M200 30 Q280 30 300 100 Q310 140 280 160 L200 160 L120 160 Q90 140 100 100 Q120 30 200 30Z"
+                                            class="cursor-pointer transition-all duration-300"
+                                            :fill="hoveredLobe === 'frontal' ? '#22c55e' : '#4ade80'"
+                                            :opacity="hoveredLobe && hoveredLobe !== 'frontal' ? '0.4' : '1'"
+                                            stroke="#16a34a" stroke-width="1.5" @mouseenter="hoveredLobe = 'frontal'"
+                                            @mouseleave="hoveredLobe = null" />
+                                        <text x="200" y="110" text-anchor="middle" class="pointer-events-none"
+                                            fill="#0f172a" font-size="13" font-weight="700">Frontal</text>
+
+                                        <!-- Central Strip (Motor Cortex) -->
+                                        <path d="M120 160 L280 160 Q290 185 280 210 L120 210 Q110 185 120 160Z"
+                                            class="cursor-pointer transition-all duration-300"
+                                            :fill="hoveredLobe === 'central' ? '#3b82f6' : '#60a5fa'"
+                                            :opacity="hoveredLobe && hoveredLobe !== 'central' ? '0.4' : '1'"
+                                            stroke="#2563eb" stroke-width="1.5" @mouseenter="hoveredLobe = 'central'"
+                                            @mouseleave="hoveredLobe = null" />
+                                        <text x="200" y="192" text-anchor="middle" class="pointer-events-none"
+                                            fill="white" font-size="13" font-weight="700">Central (Motor)</text>
+
+                                        <!-- Parietal Lobe -->
+                                        <path d="M120 210 L280 210 Q295 250 270 290 L200 300 L130 290 Q105 250 120 210Z"
+                                            class="cursor-pointer transition-all duration-300"
+                                            :fill="hoveredLobe === 'parietal' ? '#a855f7' : '#c084fc'"
+                                            :opacity="hoveredLobe && hoveredLobe !== 'parietal' ? '0.4' : '1'"
+                                            stroke="#9333ea" stroke-width="1.5" @mouseenter="hoveredLobe = 'parietal'"
+                                            @mouseleave="hoveredLobe = null" />
+                                        <text x="200" y="260" text-anchor="middle" class="pointer-events-none"
+                                            fill="white" font-size="13" font-weight="700">Parietal</text>
+
+                                        <!-- Temporal Left -->
+                                        <path
+                                            d="M30 150 Q40 100 100 100 L120 160 L110 210 Q60 210 40 180 Q30 170 30 150Z"
+                                            class="cursor-pointer transition-all duration-300"
+                                            :fill="hoveredLobe === 'temporal' ? '#f59e0b' : '#fbbf24'"
+                                            :opacity="hoveredLobe && hoveredLobe !== 'temporal' ? '0.4' : '1'"
+                                            stroke="#d97706" stroke-width="1.5" @mouseenter="hoveredLobe = 'temporal'"
+                                            @mouseleave="hoveredLobe = null" />
+                                        <text x="72" y="165" text-anchor="middle" class="pointer-events-none"
+                                            fill="#0f172a" font-size="10" font-weight="700">Temporal</text>
+
+                                        <!-- Temporal Right -->
+                                        <path
+                                            d="M370 150 Q360 100 300 100 L280 160 L290 210 Q340 210 360 180 Q370 170 370 150Z"
+                                            class="cursor-pointer transition-all duration-300"
+                                            :fill="hoveredLobe === 'temporal' ? '#f59e0b' : '#fbbf24'"
+                                            :opacity="hoveredLobe && hoveredLobe !== 'temporal' ? '0.4' : '1'"
+                                            stroke="#d97706" stroke-width="1.5" @mouseenter="hoveredLobe = 'temporal'"
+                                            @mouseleave="hoveredLobe = null" />
+                                        <text x="328" y="165" text-anchor="middle" class="pointer-events-none"
+                                            fill="#0f172a" font-size="10" font-weight="700">Temporal</text>
+
+                                        <!-- Occipital Lobe -->
+                                        <path d="M130 290 L200 300 L270 290 Q260 345 200 355 Q140 345 130 290Z"
+                                            class="cursor-pointer transition-all duration-300"
+                                            :fill="hoveredLobe === 'occipital' ? '#ef4444' : '#f87171'"
+                                            :opacity="hoveredLobe && hoveredLobe !== 'occipital' ? '0.4' : '1'"
+                                            stroke="#dc2626" stroke-width="1.5" @mouseenter="hoveredLobe = 'occipital'"
+                                            @mouseleave="hoveredLobe = null" />
+                                        <text x="200" y="330" text-anchor="middle" class="pointer-events-none"
+                                            fill="white" font-size="11" font-weight="700">Occipital</text>
+
+                                        <!-- Nose indicator -->
+                                        <polygon points="200,8 192,25 208,25" fill="#94a3b8" />
+                                        <text x="200" y="5" text-anchor="middle" fill="#94a3b8" font-size="9"
+                                            font-weight="600">FRONT</text>
+                                    </svg>
+                                </div>
+
+                                <!-- Info Panel -->
+                                <div class="lg:w-1/2 space-y-4">
+                                    <!-- Default state -->
+                                    <div x-show="!hoveredLobe"
+                                        class="bg-slate-50 rounded-2xl p-8 border border-slate-200 text-center space-y-3 min-h-[260px] flex flex-col items-center justify-center">
+                                        <div class="text-5xl">🧠</div>
+                                        <p class="text-slate-400 font-medium text-lg">Hover over a brain region to
+                                            explore its channels</p>
+                                        <p class="text-slate-400 text-sm">Each color represents a different lobe</p>
+                                    </div>
+
+                                    <!-- Frontal -->
+                                    <div x-show="hoveredLobe === 'frontal'" x-transition.opacity
+                                        class="bg-green-50 rounded-2xl p-8 border border-green-200 space-y-4 min-h-[260px]">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-4 h-4 rounded-full bg-green-500"></div>
+                                            <h4 class="text-2xl font-extrabold text-green-800">Frontal Lobe</h4>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-green-600 tracking-widest mb-1">
+                                                Channels Used</div>
+                                            <p class="font-mono text-sm text-green-900 font-bold">Fp1, Fp2, Fpz, AF3,
+                                                AF4, F3, F4, Fz, F7, F8</p>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-green-600 tracking-widest mb-1">
+                                                Responsible For</div>
+                                            <p class="text-sm text-green-800 leading-relaxed">Executive function,
+                                                planning, and decision-making. In our pipeline, frontal channels are
+                                                critical for <span class="font-bold">detecting eye-blink
+                                                    artifacts</span> (EOG) and removing them to clean our motor imagery
+                                                signal.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Central -->
+                                    <div x-show="hoveredLobe === 'central'" x-transition.opacity
+                                        class="bg-blue-50 rounded-2xl p-8 border border-blue-200 space-y-4 min-h-[260px]">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-4 h-4 rounded-full bg-blue-500"></div>
+                                            <h4 class="text-2xl font-extrabold text-blue-800">Central Lobe (Motor
+                                                Cortex)</h4>
+                                        </div>
+                                        <div class="bg-blue-100/50 rounded-xl p-3 border border-blue-200">
+                                            <div
+                                                class="text-[10px] uppercase font-black text-blue-600 tracking-widest mb-1">
+                                                ⭐ Primary Region of Interest</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-blue-600 tracking-widest mb-1">
+                                                Channels Used</div>
+                                            <p class="font-mono text-sm text-blue-900 font-bold">C3, C4, Cz, FC1, FC2,
+                                                FC5, FC6, CP1, CP2, CP5, CP6</p>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-blue-600 tracking-widest mb-1">
+                                                Responsible For</div>
+                                            <p class="text-sm text-blue-800 leading-relaxed">Voluntary motor control and
+                                                motor imagery. <span class="font-bold">C3 corresponds to right-hand
+                                                    imagery, C4 to left-hand imagery</span> (contra-lateral). This is
+                                                where Mu rhythm suppression is strongest.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Parietal -->
+                                    <div x-show="hoveredLobe === 'parietal'" x-transition.opacity
+                                        class="bg-purple-50 rounded-2xl p-8 border border-purple-200 space-y-4 min-h-[260px]">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-4 h-4 rounded-full bg-purple-500"></div>
+                                            <h4 class="text-2xl font-extrabold text-purple-800">Parietal Lobe</h4>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-purple-600 tracking-widest mb-1">
+                                                Channels Used</div>
+                                            <p class="font-mono text-sm text-purple-900 font-bold">P3, P4, Pz, P7, P8
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-purple-600 tracking-widest mb-1">
+                                                Responsible For</div>
+                                            <p class="text-sm text-purple-800 leading-relaxed">Sensory integration and
+                                                spatial processing. Parietal channels provide <span
+                                                    class="font-bold">supplementary sensorimotor information</span> that
+                                                improves classification accuracy for motor imagery tasks.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Temporal -->
+                                    <div x-show="hoveredLobe === 'temporal'" x-transition.opacity
+                                        class="bg-amber-50 rounded-2xl p-8 border border-amber-200 space-y-4 min-h-[260px]">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-4 h-4 rounded-full bg-amber-500"></div>
+                                            <h4 class="text-2xl font-extrabold text-amber-800">Temporal Lobe</h4>
+                                        </div>
+                                        <div class="bg-amber-100/50 rounded-xl p-3 border border-amber-200">
+                                            <div
+                                                class="text-[10px] uppercase font-black text-amber-600 tracking-widest mb-1">
+                                                ⚠️ Excluded from primary analysis</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-amber-600 tracking-widest mb-1">
+                                                Available Channels</div>
+                                            <p class="font-mono text-sm text-amber-900 font-bold">T7, T8, FT7, FT8, TP7,
+                                                TP8</p>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-amber-600 tracking-widest mb-1">
+                                                Why Excluded</div>
+                                            <p class="text-sm text-amber-800 leading-relaxed">Primarily handles auditory
+                                                processing and language. These channels are <span
+                                                    class="font-bold">highly susceptible to muscle artifact
+                                                    contamination</span> from jaw clenching and have low relevance to
+                                                motor imagery tasks.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Occipital -->
+                                    <div x-show="hoveredLobe === 'occipital'" x-transition.opacity
+                                        class="bg-red-50 rounded-2xl p-8 border border-red-200 space-y-4 min-h-[260px]">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                                            <h4 class="text-2xl font-extrabold text-red-800">Occipital Lobe</h4>
+                                        </div>
+                                        <div class="bg-red-100/50 rounded-xl p-3 border border-red-200">
+                                            <div
+                                                class="text-[10px] uppercase font-black text-red-600 tracking-widest mb-1">
+                                                ⚠️ Excluded from primary analysis</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-red-600 tracking-widest mb-1">
+                                                Available Channels</div>
+                                            <p class="font-mono text-sm text-red-900 font-bold">O1, O2, Oz</p>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[10px] uppercase font-black text-red-600 tracking-widest mb-1">
+                                                Why Excluded</div>
+                                            <p class="text-sm text-red-800 leading-relaxed">Dedicated to visual
+                                                processing (Alpha waves). <span class="font-bold">Not relevant to motor
+                                                    imagery</span> and can introduce noise from visual stimuli responses
+                                                into our classification pipeline.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Content 3: ML Model -->
+                <div x-show="activeTab === 3" x-transition.opacity.duration.500ms
+                    class="flex items-center justify-center p-20 text-center">
+                    <div class="max-w-md space-y-6">
+                        <div
+                            class="w-20 h-20 bg-cyber-100 text-cyber-500 rounded-full flex items-center justify-center mx-auto text-4xl animate-pulse">
+                            ⚙️
+                        </div>
+                        <h3 class="text-2xl font-bold text-navy-900">Machine Learning Architecture</h3>
+                        <p class="text-slate-500 italic">"In development. We are currently testing CNN and LSTM
+                            architectures to optimize real-time prediction accuracy across subjects."</p>
+                    </div>
+                </div>
+
+                <!-- Content 4: Control -->
+                <div x-show="activeTab === 4" x-transition.opacity.duration.500ms
+                    class="flex items-center justify-center p-20 text-center">
+                    <div class="max-w-md space-y-6">
+                        <div
+                            class="w-20 h-20 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mx-auto text-4xl">
+                            🔌
+                        </div>
+                        <h3 class="text-2xl font-bold text-navy-900">Wheelchair Control Interface</h3>
+                        <p class="text-slate-500 italic">"The final stage converts high-confidence ML predictions into
+                            mechanical commands (Left, Right, Forward, Stop) via a microcontroller interface."</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-navy-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-6 text-center space-y-8">
+            <div class="flex justify-center gap-3">
+                <div class="w-12 h-12 bg-cyber-500 rounded-xl flex items-center justify-center">
+                    <svg class="w-8 h-8 text-navy-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-slate-400 max-w-lg mx-auto leading-relaxed italic">
+                "Move with Intention and Build Things."
             </p>
-
-            <button onclick="toggleInfo('sipInfo')">Learn More</button>
-            <div id="sipInfo" class="extra-info">
-                Sip-and-puff systems are widely used in assistive mobility devices but require strong breath control and may 
-                not be suitable for individuals with respiratory conditions.
+            <div class="pt-8 border-t border-white/10 text-xs text-slate-500 font-bold uppercase tracking-widest">
+                2025-2026 Demystifying Machine Learning Project - Group 1
             </div>
         </div>
+    </footer>
 
-        <div class="tech-card">
-            <img src="https://images.newscientist.com/wp-content/uploads/2021/11/01151236/PRI_207916155.jpg" alt="Neural Implant">
-            <h4>Invasive Neural Implants</h4>
-            <p>
-                Neural implants provide direct brain control of devices and can achieve high accuracy. However, they require 
-                surgical procedures, which introduce medical risks and high costs.
-            </p>
-
-            <button onclick="toggleInfo('implantInfo')">Learn More</button>
-            <div id="implantInfo" class="extra-info">
-                Implant-based brain-computer interfaces place electrodes inside the brain to record neural activity. 
-                Although highly precise, they are not suitable for all patients.
-            </div>
-        </div>
-
-    </div>
-
-    <h3>Why New Solutions Are Needed</h3>
-
-    <div class="background-conclusion">
-        <img src="https://www.ebme.co.uk/images/arts/eeg/electroencephalogram-eeg.jpg" alt="EEG Recording">
-
-        <p>
-            The limitations of existing technologies highlight the need for alternative control methods that are safe, 
-            non-invasive, and intuitive. Recent advances in neuroscience and artificial intelligence have introduced new 
-            opportunities for assistive mobility systems.
-        </p>
-
-        <p>
-            Electroencephalography (EEG) allows researchers to monitor brain activity using sensors placed on the scalp. 
-            When combined with machine learning algorithms, EEG signals can be analysed to recognise user intentions, 
-            such as moving forward, stopping, or turning a wheelchair.
-        </p>
-
-        <p>
-            This project explores the potential of using EEG-based brain-computer interfaces to allow users to control 
-            assistive mobility devices using brain signals alone.
-        </p>
-    </div>
-</section>
-
-<script>
-function toggleInfo(id) {
-    var element = document.getElementById(id);
-    if (element.style.display === "block") {
-        element.style.display = "none";
-    } else {
-        element.style.display = "block";
-    }
-}
-</script>
-
-<style>
-.background-section {
-    padding: 60px;
-    line-height: 1.6;
-}
-
-.background-intro {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-.background-intro img {
-    width: 300px;
-    border-radius: 10px;
-}
-
-.tech-grid {
-    display: flex;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.tech-card {
-    background: #f5f7fa;
-    padding: 20px;
-    border-radius: 10px;
-    width: 30%;
-    text-align: center;
-}
-
-.tech-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.tech-card button {
-    margin-top: 10px;
-    padding: 8px 15px;
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.extra-info {
-    display: none;
-    margin-top: 10px;
-    font-size: 0.9em;
-}
-
-.background-conclusion {
-    display: flex;
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.background-conclusion img {
-    width: 300px;
-    border-radius: 10px;
-}
-</style>
-
-<!-- EEG INTRO -->
- 
-<section class="section">
-
-    <h2>Understanding EEG Signals</h2>
-
-    <div class="flex">
-
-        <img src="https://static1.squarespace.com/static/53fbefb1e4b01a33986e0cfc/t/540730fde4b0fd1f5b95f0e0/1409757438527/?format=1500w">
-
-        <div class="text-box">
-
-        <p>
-            Electroencephalography (EEG) is a non-invasive physiological method used to record the electrical activity generated by the brain. 
-            At its core, this activity is the result of billions of neurons communicating through rapid electrical impulses; when large 
-            populations of neurons fire in synchrony, their combined electromagnetic field becomes strong enough to be detected by sensitive 
-            electrodes placed on the scalp. These signals are far from random noise; they are composed of specific frequency bands, such as Mu 
-            rhythms (8-13 Hz) and Beta rhythms (13-30 Hz), which provide a window into the brain's internal states—including attention, 
-            decision-making, and movement preparation.
-
-        </p>
-
-        <p>
-            In this project, we specifically analyze these signals to detect Motor Imagery (MI), a cognitive process where an individual mentally
-            rehearses a physical action without actually performing it. The neurological significance of MI lies in the fact that imagining a 
-            movement—such as clenching a fist—activates the same neural networks in the motor cortex as the physical execution of that action. 
-            By identifying a phenomenon known as Event-Related Desynchronization (ERD), which is a predictable drop in power within the Mu and 
-            Beta bands during imagery, our machine learning model can decode the user's intentions. This makes it possible to translate pure 
-            thought into control commands for a wheelchair, effectively bridging the gap between the human nervous system and assistive technology.
-
-        </p>
-
-
-    </div>
-
-</section>
-<section class="section" style="background-color: #f4f6f9;">
-    <h2>Dataset and Data Processing</h2>
-    <p style="color: #666; ">
-        This section explains the acquisition of EEG data from the PhysioNet database and the rigorous preprocessing pipeline used to ensure model accuracy.
-    </p>
-
-    <div class="flex" style="margin-bottom: 50px;">
-        <div class="text-box">
-            <h3>EEG Dataset & Movement Intentions</h3>
-            <p> We utilize the PhysioNet EEG Motor Movement/Imagery Database (eegmmidb). This high-resolution dataset includes recordings from 109 subjects 
-                using a 64-channel EEG system (10-10 international system). The data includes both real movement and motor imagery tasks, providing over 
-                1,500 labeled recordings that are essential for training deep learning architectures like CNNs and RNNs. The data captures brain activity 
-                for both physical actions and Motor Imagery.</p>
-            
-        </div>
-        <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=1000" style="width: 300px; object-fit: contain; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-    </div>
-
-    <div class="flex" >
-        <div class="text-box">
-            <h3>Data Processing Pipeline</h3>
-            <p>Raw EEG signals are highly susceptible to noise and artifacts. Our pipeline follows these rigorous steps:</p>
-            
-            <div style="margin-top: 20px;">
-                <p>1. Noise Filtering: We apply a Band-pass filter (8-30Hz) to isolate the Mu and Beta bands relevant to motor imagery. 
-                    Additionally, a Notch filter (50Hz) is used to eliminate environmental electrical interference.</p>
-                
-                
-                <p>2. Signal Segmentation: Continuous data is segmented into 4-second epochs based on movement annotations.</p>
-                    <ul style="line-height: 1.8;">
-                        <li><strong>T0:</strong> Closing Both Feet(Stop command halts wheelchair movement​).</li>
-                        <li><strong>T1:</strong> Closing Left Fist  (Drives left wheel).</li>
-                        <li><strong>T2:</strong> Closing Right Fist (Drives right wheel).</li>
-                        <li><strong>T3:</strong> Closing Both Fist​s (Forward movement with synchronous left and right drive).</li>
-                    </ul>
-                
-                <p>3. Normalization: Using StandardScaler, we normalize the signals to have a mean of 0 and unit variance, which is 
-                    critical for the convergence of neural networks.</p>
-            </div>
-        </div>
-    </div>
-    <div class="channel-selection-container" style="text-align: left; padding: 20px 0;">
-    <div class="text-box">
-        <h3>Strategic Channel Selection (Spatial Correlation)</h3>
-        <p>According to our analysis of brain function and spatial correlation, we categorize and process channels based on their location:</p>
-    </div>
-
-    <div class="lobe-grid">
-        
-        <div class="lobe-card">
-            <img src="images/central_lobe.png" alt="Central Lobe">
-            <div class="lobe-info">
-                <strong>Central Lobe (Motor Cortex):</strong>
-                <p>This is the most critical area for our project. We prioritize channels C3, C4, and Cz, as they are directly responsible for motor execution and imagery. These channels provide the strongest Mu/Beta desynchronization signals.</p>
-            </div>
-        </div>
-
-        <div class="lobe-card">
-            <img src="images/frontal_lobe.png" alt="Frontal Lobe">
-            <div class="lobe-info">
-                <strong>Frontal Lobe:</strong>
-                <p>We use channels in this region (e.g., Fp1, Fp2) primarily for Artifact Detection. Since this lobe is close to the eyes, it is highly sensitive to eye-blinks. We apply Independent Component Analysis (ICA) to identify these frontal artifacts and remove them from the entire signal.</p>
-            </div>
-        </div>
-
-        <div class="lobe-card">
-            <img src="images/parietal_lobe.png" alt="Parietal Lobe">
-            <div class="lobe-info">
-                <strong>Parietal Lobe:</strong>
-                <p>This region is used to provide supplementary spatial information and sensory integration data that supports the primary signals from the motor cortex.</p>
-            </div>
-        </div>
-
-        <div class="lobe-card gray-scale">
-            <img src="images/temporal_occipital.png" alt="Temporal & Occipital Lobes">
-            <div class="lobe-info">
-                <strong>Temporal & Occipital Lobes:</strong>
-                <p>To minimize noise, we discard or down-weight channels from these areas. The Temporal lobe often picks up jaw-clenching and muscle noise (EMG), while the Occipital lobe is focused on visual processing, which is irrelevant to movement intention.</p>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<style>
-    .lobe-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); 
-        gap: 25px;
-        margin-top: 10px;
-    }
-
-    .lobe-card {
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        display: flex;
-        flex-direction: column; 
-        transition: transform 0.3s ease;
-    }
-
-    .lobe-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .lobe-card img {
-        width: 100%;
-        height: 280px; 
-        object-fit: contain; 
-        background-color: #eee;
-    }
-
-    .lobe-info {
-        padding: 20px;
-        font-size: 0.95em;
-        line-height: 1.6;
-    }
-
-    .lobe-info strong {
-        display: block;
-        margin-bottom: 8px;
-        color: #1f2a44;
-        font-size: 1.1em;
-    }
-
-  
-    .gray-scale {
-        border: 1px solid #ddd;
-        opacity: 0.8;
-    }
-
-
-    @media (max-width: 768px) {
-        .lobe-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-</section>
 </body>
+
 </html>
