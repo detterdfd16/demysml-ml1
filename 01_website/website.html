@@ -933,67 +933,70 @@
 
                     <div class="max-w-5xl w-full space-y-10 text-center">
 
-                        <!-- Icon -->
                         <div
-                            class="w-20 h-20 bg-cyber-500/20 text-cyber-500 rounded-full flex items-center justify-center mx-auto text-4xl">
-                            🔌
+                            class="inline-flex items-center px-5 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 text-sm font-bold uppercase tracking-widest mb-4">
+                            Future Implementation Phase
                         </div>
 
                         <!-- Title -->
                         <h3 class="text-3xl font-bold text-navy-900">
-                            Wheelchair Control Interface
+                            Wheelchair Control Neural Map
                         </h3>
+
+
 
                         <!-- Description -->
                         <p class="text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                            The trained EEGNet model performs three-class classification:
-                            <span class="font-semibold">T0 (Rest)</span>,
-                            <span class="font-semibold">T1</span>,
-                            and <span class="font-semibold">T2</span>.
-                            Once a prediction exceeds a predefined confidence threshold,
-                            the system encodes the output and transmits it to a microcontroller,
-                            which translates the signal into real-time motor commands.
+                            While our current focus is on <span class="font-bold text-navy-900 italic">optimizing the ML
+                                model's accuracy</span>, the ultimate goal is to translate these predictions into
+                            mechanical movement. The system identifies specific imagined tasks and converts them into
+                            directional commands via a microcontroller.
                         </p>
 
                         <!-- Three Output Cards -->
-                        <div class="grid md:grid-cols-3 gap-8 mt-12 text-left">
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 text-left">
 
-                            <!-- T0 -->
-                            <div class="glass rounded-2xl p-8 shadow-lg">
-                                <div class="text-sm uppercase tracking-wide text-slate-400 mb-2">Class T0</div>
-                                <h4 class="text-xl font-bold text-navy-900 mb-3">Rest State</h4>
-                                <p class="text-slate-600 text-sm leading-relaxed">
-                                    Represents absence of motor imagery.
-                                    The system interprets this state as a
-                                    <span class="font-semibold">safety halt command</span>,
-                                    immediately stopping wheelchair movement.
+                            <!-- Rest -->
+                            <div class="glass rounded-2xl p-6 shadow-lg border border-slate-100">
+
+                                <h4 class="text-lg font-bold text-navy-900 mb-2">Neutral / Rest</h4>
+                                <div class="w-8 h-1 bg-slate-200 mb-3"></div>
+                                <p class="text-slate-500 text-xs leading-relaxed">
+                                    When no specific imagery is detected, the system defaults to a <span
+                                        class="font-semibold">Safety Stop</span>.
                                 </p>
                             </div>
 
-                            <!-- T1 -->
-                            <div class="glass rounded-2xl p-8 shadow-lg">
-                                <div class="text-sm uppercase tracking-wide text-slate-400 mb-2">Class T1</div>
-                                <h4 class="text-xl font-bold text-navy-900 mb-3">Motor Imagery A</h4>
-                                <p class="text-slate-600 text-sm leading-relaxed">
-                                    Corresponds to task-dependent motor activation
-                                    (e.g., left fist or both fists depending on run).
-                                    This output is mapped to a directional command
-                                    such as <span class="font-semibold">Turn Left</span>
-                                    or <span class="font-semibold">Move Forward</span>.
+                            <!-- Left Fist -->
+                            <div class="glass rounded-2xl p-6 shadow-lg border border-slate-100">
+
+                                <h4 class="text-lg font-bold text-navy-900 mb-2">Closing Left Fist</h4>
+                                <div class="w-8 h-1 bg-cyber-500 mb-3"></div>
+                                <p class="text-slate-500 text-xs leading-relaxed">
+                                    Decoding neural patterns from the right motor cortex to trigger a <span
+                                        class="font-semibold text-navy-900">Left Turn</span>.
                                 </p>
                             </div>
 
-                            <!-- T2 -->
-                            <div class="glass rounded-2xl p-8 shadow-lg">
-                                <div class="text-sm uppercase tracking-wide text-slate-400 mb-2">Class T2</div>
-                                <h4 class="text-xl font-bold text-navy-900 mb-3">Motor Imagery B</h4>
-                                <p class="text-slate-600 text-sm leading-relaxed">
-                                    Represents the complementary motor task
-                                    (e.g., right fist or both feet depending on run).
-                                    The controller converts this into an alternative
-                                    navigation command such as
-                                    <span class="font-semibold">Turn Right</span>
-                                    or controlled stop.
+                            <!-- Right Fist -->
+                            <div class="glass rounded-2xl p-6 shadow-lg border border-slate-100">
+
+                                <h4 class="text-lg font-bold text-navy-900 mb-2">Closing Right Fist</h4>
+                                <div class="w-8 h-1 bg-blue-500 mb-3"></div>
+                                <p class="text-slate-500 text-xs leading-relaxed">
+                                    Decoding neural patterns from the left motor cortex to trigger a <span
+                                        class="font-semibold text-navy-900">Right Turn</span>.
+                                </p>
+                            </div>
+
+                            <!-- Both Fists/Feet -->
+                            <div class="glass rounded-2xl p-6 shadow-lg border border-slate-100">
+
+                                <h4 class="text-lg font-bold text-navy-900 mb-2">Both Fists / Feet</h4>
+                                <div class="w-8 h-1 bg-purple-500 mb-3"></div>
+                                <p class="text-slate-500 text-xs leading-relaxed">
+                                    Complex imagery tasks mapped to <span class="font-semibold text-navy-900">Forward
+                                        Motion</span> or emergency deceleration.
                                 </p>
                             </div>
 
