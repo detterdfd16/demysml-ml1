@@ -848,15 +848,116 @@
 
                 <!-- Content 4: Control -->
                 <div x-show="activeTab === 4" x-transition.opacity.duration.500ms
-                    class="flex items-center justify-center p-20 text-center">
-                    <div class="max-w-md space-y-6">
+                    class="flex items-center justify-center p-16">
+
+                    <div class="max-w-5xl w-full space-y-10 text-center">
+
+                        <!-- Icon -->
                         <div
-                            class="w-20 h-20 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mx-auto text-4xl">
+                            class="w-20 h-20 bg-cyber-500/20 text-cyber-500 rounded-full flex items-center justify-center mx-auto text-4xl">
                             🔌
                         </div>
-                        <h3 class="text-2xl font-bold text-navy-900">Wheelchair Control Interface</h3>
-                        <p class="text-slate-500 italic">"The final stage converts high-confidence ML predictions into
-                            mechanical commands (Left, Right, Forward, Stop) via a microcontroller interface."</p>
+
+                        <!-- Title -->
+                        <h3 class="text-3xl font-bold text-navy-900">
+                            Wheelchair Control Interface
+                        </h3>
+
+                        <!-- Description -->
+                        <p class="text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                            The trained EEGNet model performs three-class classification:
+                            <span class="font-semibold">T0 (Rest)</span>,
+                            <span class="font-semibold">T1</span>,
+                            and <span class="font-semibold">T2</span>.
+                            Once a prediction exceeds a predefined confidence threshold,
+                            the system encodes the output and transmits it to a microcontroller,
+                            which translates the signal into real-time motor commands.
+                        </p>
+
+                        <!-- Three Output Cards -->
+                        <div class="grid md:grid-cols-3 gap-8 mt-12 text-left">
+
+                            <!-- T0 -->
+                            <div class="glass rounded-2xl p-8 shadow-lg">
+                                <div class="text-sm uppercase tracking-wide text-slate-400 mb-2">Class T0</div>
+                                <h4 class="text-xl font-bold text-navy-900 mb-3">Rest State</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Represents absence of motor imagery.
+                                    The system interprets this state as a
+                                    <span class="font-semibold">safety halt command</span>,
+                                    immediately stopping wheelchair movement.
+                                </p>
+                            </div>
+
+                            <!-- T1 -->
+                            <div class="glass rounded-2xl p-8 shadow-lg">
+                                <div class="text-sm uppercase tracking-wide text-slate-400 mb-2">Class T1</div>
+                                <h4 class="text-xl font-bold text-navy-900 mb-3">Motor Imagery A</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Corresponds to task-dependent motor activation
+                                    (e.g., left fist or both fists depending on run).
+                                    This output is mapped to a directional command
+                                    such as <span class="font-semibold">Turn Left</span>
+                                    or <span class="font-semibold">Move Forward</span>.
+                                </p>
+                            </div>
+
+                            <!-- T2 -->
+                            <div class="glass rounded-2xl p-8 shadow-lg">
+                                <div class="text-sm uppercase tracking-wide text-slate-400 mb-2">Class T2</div>
+                                <h4 class="text-xl font-bold text-navy-900 mb-3">Motor Imagery B</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Represents the complementary motor task
+                                    (e.g., right fist or both feet depending on run).
+                                    The controller converts this into an alternative
+                                    navigation command such as
+                                    <span class="font-semibold">Turn Right</span>
+                                    or controlled stop.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <!-- Pipeline Flow -->
+                        <div class="mt-16">
+                            <h4 class="text-xl font-bold text-navy-900 mb-6">
+                                Signal-to-Motion Pipeline
+                            </h4>
+
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-6 text-slate-600 text-sm">
+
+                                <div class="px-6 py-4 rounded-xl bg-slate-100 border border-slate-200">
+                                    EEG Acquisition
+                                </div>
+
+                                <div class="text-cyber-500 text-xl font-bold">→</div>
+
+                                <div class="px-6 py-4 rounded-xl bg-slate-100 border border-slate-200">
+                                    EEGNet Classification
+                                </div>
+
+                                <div class="text-cyber-500 text-xl font-bold">→</div>
+
+                                <div class="px-6 py-4 rounded-xl bg-slate-100 border border-slate-200">
+                                    Microcontroller Encoding
+                                </div>
+
+                                <div class="text-cyber-500 text-xl font-bold">→</div>
+
+                                <div class="px-6 py-4 rounded-xl bg-slate-100 border border-slate-200">
+                                    Motor Driver Activation
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Safety Note -->
+                        <div class="mt-10 text-sm text-slate-500 italic max-w-2xl mx-auto">
+                            To ensure safe operation, commands are executed only when prediction
+                            confidence exceeds a defined threshold. This reduces unintended
+                            activations caused by EEG noise and enhances real-world reliability.
+                        </div>
+
                     </div>
                 </div>
 
