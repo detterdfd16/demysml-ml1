@@ -914,16 +914,99 @@
                 </div>
 
                 <!-- Content 3: ML Model -->
+                                <!-- Content 3: Machine Learning -->
                 <div x-show="activeTab === 3" x-transition.opacity.duration.500ms
                     class="flex items-center justify-center p-20 text-center">
-                    <div class="max-w-md space-y-6">
+
+                    <div class="max-w-4xl space-y-10">
+
+                        <!-- Icon -->
                         <div
                             class="w-20 h-20 bg-cyber-100 text-cyber-500 rounded-full flex items-center justify-center mx-auto text-4xl animate-pulse">
                             ⚙️
                         </div>
-                        <h3 class="text-3xl font-bold text-navy-900">Machine Learning Architecture</h3>
-                        <p class="text-slate-500 italic">"In development. We are currently testing CNN and LSTM
-                            architectures to optimize real-time prediction accuracy across subjects."</p>
+
+                        <!-- Title -->
+                        <h3 class="text-3xl font-bold text-navy-900">
+                            Machine Learning Architecture
+                        </h3>
+
+                        <!-- Overview -->
+                        <p class="text-slate-600 leading-relaxed max-w-3xl mx-auto">
+                            The system employs a lightweight EEGNet-inspired convolutional neural
+                            network designed for real-time motor imagery classification.
+                            The model performs <span class="font-semibold">four-class prediction</span>,
+                            producing probability outputs for:
+                            Rest, Left Fist, Right Fist, and Feet Motor Imagery.
+                        </p>
+
+                        <!-- Architecture Blocks -->
+                        <div class="grid md:grid-cols-2 gap-8 text-left mt-8">
+
+                            <!-- Block 1 -->
+                            <div
+                                class="bg-slate-50 rounded-xl p-6 shadow-sm border border-slate-200 transition hover:shadow-md hover:-translate-y-1 duration-300">
+                                <h4 class="font-semibold text-navy-900 mb-3">1. Temporal Convolution Layer</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Applies 1D convolutions across time to extract frequency-related
+                                    features from raw EEG signals. This stage captures rhythmic
+                                    motor imagery patterns such as μ and β band activity.
+                                </p>
+                            </div>
+
+                            <!-- Block 2 -->
+                            <div
+                                class="bg-slate-50 rounded-xl p-6 shadow-sm border border-slate-200 transition hover:shadow-md hover:-translate-y-1 duration-300">
+                                <h4 class="font-semibold text-navy-900 mb-3">2. Depthwise Spatial Filtering</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Learns spatial relationships between EEG channels,
+                                    enhancing discrimination of motor cortex activation
+                                    across different imagined movements.
+                                </p>
+                            </div>
+
+                            <!-- Block 3 -->
+                            <div
+                                class="bg-slate-50 rounded-xl p-6 shadow-sm border border-slate-200 transition hover:shadow-md hover:-translate-y-1 duration-300">
+                                <h4 class="font-semibold text-navy-900 mb-3">3. Separable Convolution</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Reduces parameter count while maintaining feature richness,
+                                    enabling efficient deployment on embedded systems
+                                    such as microcontroller-assisted devices.
+                                </p>
+                            </div>
+
+                            <!-- Block 4 -->
+                            <div
+                                class="bg-slate-50 rounded-xl p-6 shadow-sm border border-slate-200 transition hover:shadow-md hover:-translate-y-1 duration-300">
+                                <h4 class="font-semibold text-navy-900 mb-3">4. Fully Connected + Softmax</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    Outputs a probability distribution over four classes.
+                                    The highest-confidence prediction is selected and passed
+                                    to the control interface for wheelchair navigation.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <!-- Output Description -->
+                        <div class="mt-10">
+                            <h4 class="text-lg font-bold text-navy-900 mb-4">Model Outputs</h4>
+                            <div class="grid md:grid-cols-4 gap-4 text-sm">
+                                <div class="bg-cyber-50 text-cyber-600 rounded-lg p-4">Rest (T0)</div>
+                                <div class="bg-cyber-50 text-cyber-600 rounded-lg p-4">Left Fist (T1)</div>
+                                <div class="bg-cyber-50 text-cyber-600 rounded-lg p-4">Right Fist (T2)</div>
+                                <div class="bg-cyber-50 text-cyber-600 rounded-lg p-4">Feet Imagery</div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Note -->
+                        <p class="text-sm text-slate-500 italic mt-6">
+                            Batch normalisation and dropout regularisation are incorporated
+                            to improve cross-subject robustness and reduce overfitting,
+                            ensuring stable real-time inference.
+                        </p>
+
                     </div>
                 </div>
 
